@@ -6,7 +6,7 @@ use std::process;
 fn find_rev_ctrl_root(dir: &Path) -> Result<&Path, io::Error> {
     let mut p = dir;
     loop {
-        if p.join(".git").is_dir() {
+        if p.join(".git").is_dir() || p.join(".svn").is_dir() {
             return Ok(p);
         }
         match p.parent() {

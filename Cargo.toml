@@ -3,6 +3,8 @@ name = "coderoot"
 version = "0.1.0"
 authors = ["Greg Manning <greg@gregmanning.uk>"]
 edition = "2018"
+description = "Simple tool to run a command at the top level of source control checkout"
+publish = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
