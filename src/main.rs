@@ -1,4 +1,5 @@
-use std::env;
+extern crate clap;
+
 use std::io;
 use std::path::Path;
 use std::process;
@@ -23,24 +24,56 @@ fn find_rev_ctrl_root(dir: &Path) -> Result<&Path, io::Error> {
     }
 }
 
-fn go() -> Result<process::ExitStatus, io::Error> {
+fn go(cmd: Option<&str>, args: Vec<&str>, subdir: &str) -> Result<i32, io::Error> {
     let cwd = Path::new(".").canonicalize()?;
     let root = find_rev_ctrl_root(&cwd)?;
-    let args: Vec<String> = env::args().skip(1).collect();
-    println!("Executing {:?} in {:?}", args, root);
-    let es = process::Command::new(&args[0])
-        .args(&args[1..])
-        .current_dir(root)
-        .spawn()
-        .expect("Command failed")
-        .wait()
-        .expect("Command wasn't running");
+    let target_dir = root.join(Path::new(subdir)).canonicalize()?;
+    let es = match cmd {
+        None => {
+            println!("{}", target_dir.display());
+            0
+        }
+        Some(c) => {
+            println!("Executing {:?} {:?} in {:?}", cmd, args, target_dir);
+            process::Command::new(c)
+                .args(&args[1..])
+                .current_dir(root)
+                .spawn()
+                .expect("Command failed")
+                .wait()
+                .expect("Command wasn't running")
+                .code()
+                .unwrap_or(1)
+        }
+    };
     Ok(es)
 }
 
 fn main() {
-    match go() {
-        Ok(es) => process::exit(es.code().unwrap_or(1)),
+    let matches = clap::App::new("Code Root")
+        .version("1.0")
+        .author("Greg Manning <greg@gregmanning.uk>")
+        .about("Run command in nearest parent revision control root directory")
+        //.setting(clap::AppSettings::AllowLeadingHyphen)
+        .setting(clap::AppSettings::TrailingVarArg)
+        .arg(
+            clap::Arg::with_name("subdir")
+                .short("s")
+                .long("subdir")
+                .value_name("SUBDIR")
+                .help("Run in subdir of revision control root")
+                .takes_value(true),
+        )
+        .arg(clap::Arg::with_name("cmd"))
+        .arg(clap::Arg::with_name("cmd_args").multiple(true))
+        .get_matches();
+
+    let subdir = matches.value_of("subdir").unwrap_or("");
+    let cmd = matches.value_of("cmd");
+    let args = matches.values_of("cmd_args").unwrap_or_default().collect();
+    println!("SD: {:?}\nCMD: {:?}\nARGS: {:?}", subdir, cmd, args);
+    match go(cmd, args, subdir) {
+        Ok(es) => process::exit(es),
         Err(e) => {
             println!("ERR: {:?}", e);
             process::exit(1);
