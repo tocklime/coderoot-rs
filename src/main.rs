@@ -54,7 +54,7 @@ fn main() {
         .version("0.1")
         .author("Greg Manning <greg@gregmanning.uk>")
         .about("Run command in nearest parent revision control root directory")
-        //.setting(clap::AppSettings::AllowLeadingHyphen)
+        .setting(clap::AppSettings::AllowLeadingHyphen)
         .setting(clap::AppSettings::TrailingVarArg)
         .arg(
             clap::Arg::with_name("subdir")
