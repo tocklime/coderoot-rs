@@ -51,7 +51,7 @@ fn go(cmd: Option<&str>, args: Vec<&str>, subdir: &str) -> Result<i32, io::Error
 
 fn main() {
     let matches = clap::App::new("Code Root")
-        .version("1.0")
+        .version("0.1")
         .author("Greg Manning <greg@gregmanning.uk>")
         .about("Run command in nearest parent revision control root directory")
         //.setting(clap::AppSettings::AllowLeadingHyphen)
