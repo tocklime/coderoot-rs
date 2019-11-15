@@ -71,7 +71,7 @@ fn main() {
     let subdir = matches.value_of("subdir").unwrap_or("");
     let cmd = matches.value_of("cmd");
     let args = matches.values_of("cmd_args").unwrap_or_default().collect();
-    println!("SD: {:?}\nCMD: {:?}\nARGS: {:?}", subdir, cmd, args);
+    //println!("SD: {:?}\nCMD: {:?}\nARGS: {:?}", subdir, cmd, args);
     match go(cmd, args, subdir) {
         Ok(es) => process::exit(es),
         Err(e) => {
