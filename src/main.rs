@@ -34,7 +34,7 @@ fn go(cmd: Option<&str>, args: Vec<&str>, subdir: &str) -> Result<i32, io::Error
             0
         }
         Some(c) => {
-            eprintln!("Executing {:?} {:?} in {:?}", c, args, target_dir);
+            eprintln!("Executing {} {:?} in {}", c, args, target_dir.display());
             process::Command::new(c)
                 .args(&args)
                 .current_dir(target_dir)
