@@ -25,9 +25,9 @@ fn find_rev_ctrl_root(dir: &Path) -> Result<&Path, io::Error> {
 }
 
 fn go(cmd: Option<&str>, args: Vec<&str>, subdir: &str) -> Result<i32, io::Error> {
-    let cwd = Path::new(".").canonicalize()?;
+    let cwd = dunce::canonicalize(Path::new("."))?;
     let root = find_rev_ctrl_root(&cwd)?;
-    let target_dir = root.join(Path::new(subdir)).canonicalize()?;
+    let target_dir = dunce::canonicalize(root.join(Path::new(subdir)))?;
     let es = match cmd {
         None => {
             println!("{}", target_dir.display());
@@ -36,7 +36,7 @@ fn go(cmd: Option<&str>, args: Vec<&str>, subdir: &str) -> Result<i32, io::Error
         Some(c) => {
             println!("Executing {:?} {:?} in {:?}", cmd, args, target_dir);
             process::Command::new(c)
-                .args(&args[1..])
+                .args(&args)
                 .current_dir(root)
                 .spawn()
                 .expect("Command failed")
