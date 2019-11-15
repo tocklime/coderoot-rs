@@ -34,7 +34,7 @@ fn go(cmd: Option<&str>, args: Vec<&str>, subdir: &str) -> Result<i32, io::Error
             0
         }
         Some(c) => {
-            println!("Executing {:?} {:?} in {:?}", cmd, args, target_dir);
+            eprintln!("Executing {:?} {:?} in {:?}", c, args, target_dir);
             process::Command::new(c)
                 .args(&args)
                 .current_dir(root)
@@ -71,11 +71,11 @@ fn main() {
     let subdir = matches.value_of("subdir").unwrap_or("");
     let cmd = matches.value_of("cmd");
     let args = matches.values_of("cmd_args").unwrap_or_default().collect();
-    //println!("SD: {:?}\nCMD: {:?}\nARGS: {:?}", subdir, cmd, args);
+    //eprintln!("SD: {:?}\nCMD: {:?}\nARGS: {:?}", subdir, cmd, args);
     match go(cmd, args, subdir) {
         Ok(es) => process::exit(es),
         Err(e) => {
-            println!("ERR: {:?}", e);
+            eprintln!("ERR: {:?}", e);
             process::exit(1);
         }
     }
