@@ -37,7 +37,7 @@ fn go(cmd: Option<&str>, args: Vec<&str>, subdir: &str) -> Result<i32, io::Error
             eprintln!("Executing {:?} {:?} in {:?}", c, args, target_dir);
             process::Command::new(c)
                 .args(&args)
-                .current_dir(root)
+                .current_dir(target_dir)
                 .spawn()
                 .expect("Command failed")
                 .wait()
